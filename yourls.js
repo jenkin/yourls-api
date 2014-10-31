@@ -101,7 +101,16 @@
     if (typeof keyword === 'function') {
       callback = keyword;
     } else {
-      data.keyword = keyword;
+      if (keyword.slice(-1) === "*") {
+        if (md5 && typeof md5 === "function") {
+          data.keyword = keyword.slice(0,-1) + md5(url);
+        } else {
+          throw "WARNING: short url prefix asked, but md5 library missing";
+          data.keyword = keyword.slice(0,-1);
+        }
+      } else {
+        data.keyword = keyword;
+      }
     }
     jsonp(paramify(data), callback, context);
     return this;
